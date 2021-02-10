@@ -13,7 +13,7 @@ var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
 // Create an SVG wrapper, append an SVG group that will hold our chart, and shift the latter by left and top margins.
-var svg = d3.select(".chart")
+var svg = d3.select("#scatter")
   .append("svg")
   .attr("width", svgWidth)
   .attr("height", svgHeight);
@@ -22,7 +22,7 @@ var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 // Import Data
-d3.csv("data/data.csv").then(function(demoData) {
+d3.csv("assets/data/data.csv").then(function(demoData) {
 
     // Step 1: Parse Data/Cast as numbers
     // ==============================
@@ -65,6 +65,7 @@ d3.csv("data/data.csv").then(function(demoData) {
       .attr("r", "15")
       .attr("fill", "lightblue")
       .attr("opacity", "0.5");
+
     // Create axes labels
     chartGroup.append("text")
       .attr("transform", "rotate(-90)")
