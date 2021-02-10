@@ -56,44 +56,48 @@ d3.csv("assets/data/data.csv").then(function(demoData) {
       .call(leftAxis);
     // Create Circles
     // ==============================
-    var circlesGroup = chartGroup.selectAll("circle")
+    var circlesGroup = chartGroup.selectAll("g.dot")
       .data(demoData)
       .enter()
-      .append("circle")
+      .append("g");
+
+    circlesGroup.append("circle")
       .attr("cx", d => xLinearScale(d.poverty))
       .attr("cy", d => yLinearScale(d.healthcare))
       .attr("r", "14")
-      .attr("fill", "lightblue")
-      .attr("opacity", "0.6");
+      .attr("fill", "teal")
+      .attr("opacity", "0.8")
+      .attr("class", "dot");
     
-    // Create Circles Labels
-    var gdots =  svg.selectAll("g.dot")
-            .data(demoData)
-            .enter().append('g');
+    // Create Circles and Circle Labels
+    // Wrap circles and texts inside a g group
+    // var gdots =  svg.selectAll("g.dot")
+    //         .data(demoData)
+    //         .enter().append('g');
     
-    gdots.append("circle")
-        .attr("class", "dot")
-        .attr("r", function (d) {
-            return d.r;
-        })
-        .attr("cx", function (d) {
-            return xLinearScale(d.poverty);
-        })
-        .attr("cy", function (d) {
-            return yLinearScale(d.healthcare);
-        })
-        .style("fill", function (d) {
-            return d.c;
-        });
-    gdots.append("text").text(function(d){
-                return d.abbr;
-            })
-            .attr("x", function (d) {
-                return xLinearScale(d.poverty);
-            })
-            .attr("y", function (d) {
-                return yLinearScale(d.healthcare);
-            });
+    // // Put texts along with circles inside that g group
+    // gdots.append("circle")
+    //     .attr("class", "dot")
+    //     // .attr("cx", function (d) {
+    //     //     return xLinearScale(d.poverty);
+    //     // })
+    //     // .attr("cy", function (d) {
+    //     //     return yLinearScale(d.healthcare);
+    //     // })
+    //     // .style("fill", function (d) {
+    //     //     return d.c;
+    //     // })
+    //     .attr("cx", d => xLinearScale(d.poverty))
+    //     .attr("cy", d => yLinearScale(d.healthcare))
+    //     .attr("r", "14")
+    //     .attr("fill", "lightblue")
+    //     .attr("opacity", "0.6");
+
+    circlesGroup.append("text")
+            .text(d=>d.abbr)
+            .attr("x", d => xLinearScale(d.poverty)-11)
+            .attr("y", d => yLinearScale(d.healthcare)+5)
+            .attr("fill", "white");
 
     // Create axes labels
     chartGroup.append("text")
