@@ -35,11 +35,11 @@ d3.csv("assets/data/data.csv").then(function(demoData) {
     // Step 2: Create scale functions
     // ==============================
     var xLinearScale = d3.scaleLinear()
-        .domain([d3.min(demoData, d => d.poverty)-5, d3.max(demoData, d => d.poverty)])
+        .domain([d3.min(demoData, d => d.poverty)-0.5, d3.max(demoData, d => d.poverty)+2])
         .range([0, width]);
 
     var yLinearScale = d3.scaleLinear()
-        .domain([0, d3.max(demoData, d => d.healthcare)])
+        .domain([d3.min(demoData, d => d.healthcare)-1, d3.max(demoData, d => d.healthcare)+2])
         .range([height, 0]);
 
     // Step 3: Create axis functions
@@ -62,9 +62,9 @@ d3.csv("assets/data/data.csv").then(function(demoData) {
       .append("circle")
       .attr("cx", d => xLinearScale(d.poverty))
       .attr("cy", d => yLinearScale(d.healthcare))
-      .attr("r", "15")
+      .attr("r", "14")
       .attr("fill", "lightblue")
-      .attr("opacity", "0.5");
+      .attr("opacity", "0.6");
 
     // Create axes labels
     chartGroup.append("text")
@@ -73,11 +73,13 @@ d3.csv("assets/data/data.csv").then(function(demoData) {
       .attr("x", 0 - (height / 2))
       .attr("dy", "1em")
       .attr("class", "axisText")
+      .attr("text-anchor", "middle")
       .text("Lacks Healthcare (%)");
 
     chartGroup.append("text")
       .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
       .attr("class", "axisText")
+      .attr("text-anchor", "middle")
       .text("In Poverty (%)");
   }).catch(function(error) {
     console.log(error);
