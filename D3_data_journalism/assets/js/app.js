@@ -24,7 +24,7 @@ var chartGroup = svg.append("g")
 // Import Data
 d3.csv("assets/data/data.csv").then(function(demoData) {
 
-    // Step 1: Parse Data/Cast as numbers
+    // Parse Data/Cast as numbers
     // ==============================
     // parse data
     demoData.forEach(function(data) {
@@ -32,7 +32,7 @@ d3.csv("assets/data/data.csv").then(function(demoData) {
       data.healthcare = +data.healthcare;
     });
 
-    // Step 2: Create scale functions
+    // Create scale functions
     // ==============================
     var xLinearScale = d3.scaleLinear()
         .domain([d3.min(demoData, d => d.poverty)-0.5, d3.max(demoData, d => d.poverty)+2])
@@ -42,7 +42,7 @@ d3.csv("assets/data/data.csv").then(function(demoData) {
         .domain([d3.min(demoData, d => d.healthcare)-1, d3.max(demoData, d => d.healthcare)+2])
         .range([height, 0]);
 
-    // Step 3: Create axis functions
+    // Create axis functions
     // ==============================
     var bottomAxis = d3.axisBottom(xLinearScale);
     var leftAxis = d3.axisLeft(yLinearScale);
@@ -54,7 +54,7 @@ d3.csv("assets/data/data.csv").then(function(demoData) {
 
     chartGroup.append("g")
       .call(leftAxis);
-    // Step 5: Create Circles
+    // Create Circles
     // ==============================
     var circlesGroup = chartGroup.selectAll("circle")
       .data(demoData)
@@ -65,6 +65,35 @@ d3.csv("assets/data/data.csv").then(function(demoData) {
       .attr("r", "14")
       .attr("fill", "lightblue")
       .attr("opacity", "0.6");
+    
+    // Create Circles Labels
+    var gdots =  svg.selectAll("g.dot")
+            .data(demoData)
+            .enter().append('g');
+    
+    gdots.append("circle")
+        .attr("class", "dot")
+        .attr("r", function (d) {
+            return d.r;
+        })
+        .attr("cx", function (d) {
+            return xLinearScale(d.poverty);
+        })
+        .attr("cy", function (d) {
+            return yLinearScale(d.healthcare);
+        })
+        .style("fill", function (d) {
+            return d.c;
+        });
+    gdots.append("text").text(function(d){
+                return d.abbr;
+            })
+            .attr("x", function (d) {
+                return xLinearScale(d.poverty);
+            })
+            .attr("y", function (d) {
+                return yLinearScale(d.healthcare);
+            });
 
     // Create axes labels
     chartGroup.append("text")
