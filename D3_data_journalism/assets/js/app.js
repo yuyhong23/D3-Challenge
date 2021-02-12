@@ -73,7 +73,6 @@ d3.csv("assets/data/data.csv").then(function(demoData) {
       .text(d=>d.abbr)
       .attr("x", d => xLinearScale(d.poverty))
       .attr("y", d => yLinearScale(d.healthcare)+6)
-      .attr("fill", "white")
       .attr("class", "stateText");
 
     // Create axes labels

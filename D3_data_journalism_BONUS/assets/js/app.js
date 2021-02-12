@@ -150,7 +150,6 @@ d3.csv("assets/data/data.csv").then(function(demoData, err) {
       .text(d=>d.abbr)
       .attr("x", d => xLinearScale(d[chosenXAxis]))
       .attr("y", d => yLinearScale(d.healthcare)+6)
-      .attr("fill", "white")
       .attr("class", "stateText");
 
     // Create group for two x-axis labels
