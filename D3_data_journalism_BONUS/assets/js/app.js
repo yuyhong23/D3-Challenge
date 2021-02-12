@@ -5,7 +5,7 @@ var svgHeight = 500;
 var margin = {
   top: 20,
   right: 20,
-  bottom: 60,
+  bottom: 100,
   left: 60
 };
 
@@ -52,7 +52,7 @@ function updateToolTip(chosenXAxis, circlesGroup) {
   }
 
   var toolTip = d3.tip()
-    .attr("class", "tooltip")
+    .attr("class", "d3-tip")
     .offset([80, -60])
     .html(function(d) {
       return (`${d.state}<br>${label} ${d[chosenXAxis]}`);
@@ -143,9 +143,7 @@ d3.csv("assets/data/data.csv").then(function(demoData, err) {
       .attr("cx", d => xLinearScale(d[chosenXAxis]))
       .attr("cy", d => yLinearScale(d.healthcare))
       .attr("r", "14")
-      .attr("fill", "teal")
-      .attr("opacity", "0.8")
-      .attr("class", "dot");
+      .attr("class", "stateCircle");
     
     // Put texts along with circles inside that g group
     circlesGroup.append("text")
@@ -169,7 +167,7 @@ d3.csv("assets/data/data.csv").then(function(demoData, err) {
 
     var ageLabel = labelsGroup.append("text")
       .attr("x", 0)
-      .attr("y", 20)
+      .attr("y", 40)
       .attr("value", "age") // value to grab for event listener
       .classed("inactive", true)
       .attr("class", "aText")
@@ -177,7 +175,7 @@ d3.csv("assets/data/data.csv").then(function(demoData, err) {
 
     var incomeLabel = labelsGroup.append("text")
       .attr("x", 0)
-      .attr("y", 20)
+      .attr("y", 60)
       .attr("value", "income") // value to grab for event listener
       .classed("inactive", true)
       .attr("class", "aText")
