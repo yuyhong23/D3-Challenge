@@ -37,6 +37,18 @@ function xScale(demoData, chosenXAxis) {
   return xLinearScale;
 }
 
+// function used for updating y-scale var upon click on axis label
+function yScale(demoData, chosenYAxis) {
+  // create scales
+  var yLinearScale = d3.scaleLinear()
+    .domain([d3.min(demoData, d => d[chosenYAxis]) -0.5,
+      d3.max(demoData, d => d[chosenYAxis]) +2
+    ])
+    .range([0, width]);
+
+  return yLinearScale;
+}
+
 // function used for updating circles group with new tooltip
 function updateToolTip(chosenXAxis, circlesGroup) {
 
@@ -81,6 +93,17 @@ function renderAxes(newXScale, xAxis) {
     .call(bottomAxis);
 
   return xAxis;
+}
+
+// function used for updating xAxis var upon click on axis label
+function renderYAxes(newYScale, yAxis) {
+  var leftAxis = d3.axisLeft(newYScale);
+
+ yAxis.transition()
+    .duration(1000)
+    .call(leftAxis);
+
+  return yAxis;
 }
 
 // function used for updating circles group with a transition to
@@ -133,7 +156,7 @@ d3.csv("assets/data/data.csv").then(function(demoData, err) {
     chartGroup.append("g")
       .call(leftAxis);
 
-    // Create Circlesand Circle Labels
+    // Create Circles and Circle Labels
     // ==============================
     var circlesGroup = chartGroup.selectAll("g.dot")
       .data(demoData)
