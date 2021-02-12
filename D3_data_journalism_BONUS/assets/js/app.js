@@ -125,7 +125,7 @@ d3.csv("assets/data/data.csv").then(function(demoData, err) {
     // Step 4: Append Axes to the chart
     // ==============================
     var xAxis = chartGroup.append("g")
-      .classed("x-axis, true")
+      .classed("x-axis", true)
       .attr("transform", `translate(0, ${height})`)
       .call(bottomAxis);
 
