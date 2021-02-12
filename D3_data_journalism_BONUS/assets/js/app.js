@@ -21,8 +21,47 @@ var svg = d3.select("#scatter")
 var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+// Initial Params
+var chosenXAxis = "hair_length";
+
+// function used for updating x-scale var upon click on axis label
+function xScale(demoData, chosenXAxis) {
+  // create scales
+  var xLinearScale = d3.scaleLinear()
+    .domain([d3.min(demoData, d => d[chosenXAxis]) -0.5,
+      d3.max(demoData, d => d[chosenXAxis]) +2
+    ])
+    .range([0, width]);
+
+  return xLinearScale;
+
+}
+
+// function used for updating xAxis var upon click on axis label
+function renderAxes(newXScale, xAxis) {
+  var bottomAxis = d3.axisBottom(newXScale);
+
+  xAxis.transition()
+    .duration(1000)
+    .call(bottomAxis);
+
+  return xAxis;
+}
+
+// function used for updating circles group with a transition to
+// new circles
+function renderCircles(circlesGroup, newXScale, chosenXAxis) {
+
+  circlesGroup.transition()
+    .duration(1000)
+    .attr("cx", d => newXScale(d[chosenXAxis]));
+
+  return circlesGroup;
+}
+
 // Import Data
-d3.csv("assets/data/data.csv").then(function(demoData) {
+d3.csv("assets/data/data.csv").then(function(demoData, err) {
+  if (err) throw err;
 
     // Parse Data/Cast as numbers
     // ==============================
@@ -30,13 +69,15 @@ d3.csv("assets/data/data.csv").then(function(demoData) {
     demoData.forEach(function(data) {
       data.poverty = +data.poverty;
       data.healthcare = +data.healthcare;
+      // parsing the data for new x-axis
+      data.age = +data.age;
+      data.income = +data.income;
     });
 
     // Create scale functions
     // ==============================
-    var xLinearScale = d3.scaleLinear()
-        .domain([d3.min(demoData, d => d.poverty)-0.5, d3.max(demoData, d => d.poverty)+2])
-        .range([0, width]);
+    // xLinearScale function above csv import
+    var xLinearScale = xScale(demoData, chosenXAxis);
 
     var yLinearScale = d3.scaleLinear()
         .domain([d3.min(demoData, d => d.healthcare)-1, d3.max(demoData, d => d.healthcare)+2])
@@ -46,9 +87,11 @@ d3.csv("assets/data/data.csv").then(function(demoData) {
     // ==============================
     var bottomAxis = d3.axisBottom(xLinearScale);
     var leftAxis = d3.axisLeft(yLinearScale);
+
     // Step 4: Append Axes to the chart
     // ==============================
-    chartGroup.append("g")
+    var xAxis = chartGroup.append("g")
+      .classed("x-axis, true")
       .attr("transform", `translate(0, ${height})`)
       .call(bottomAxis);
 
@@ -63,7 +106,7 @@ d3.csv("assets/data/data.csv").then(function(demoData) {
       .append("g");
 
     circlesGroup.append("circle")
-      .attr("cx", d => xLinearScale(d.poverty))
+      .attr("cx", d => xLinearScale(d[chosenXAxis]))
       .attr("cy", d => yLinearScale(d.healthcare))
       .attr("r", "14")
       .attr("fill", "teal")
@@ -72,11 +115,39 @@ d3.csv("assets/data/data.csv").then(function(demoData) {
     
     // Put texts along with circles inside that g group
     circlesGroup.append("text")
-            .text(d=>d.abbr)
-            .attr("x", d => xLinearScale(d.poverty))
-            .attr("y", d => yLinearScale(d.healthcare)+6)
-            .attr("fill", "white")
-            .attr("class", "stateText");
+      .text(d=>d.abbr)
+      .attr("x", d => xLinearScale(d[chosenXAxis]))
+      .attr("y", d => yLinearScale(d.healthcare)+6)
+      .attr("fill", "white")
+      .attr("class", "stateText");
+
+    // Create group for two x-axis labels
+    var labelsGroup = chartGroup.append("g")
+      .attr("transform", `translate(${width / 2}, ${height + 20})`);
+    
+    var povertyLabel = labelsGroup.append("text")
+      .attr("x", 0)
+      .attr("y", 20)
+      .attr("value", "poverty") // value to grab for event listener
+      .classed("active", true)
+      .attr("class", "aText")
+      .text("In Poverty (%)");
+
+    var ageLabel = labelsGroup.append("text")
+      .attr("x", 0)
+      .attr("y", 20)
+      .attr("value", "age") // value to grab for event listener
+      .classed("inactive", true)
+      .attr("class", "aText")
+      .text("Age (Median)");
+
+    var incomeLabel = labelsGroup.append("text")
+      .attr("x", 0)
+      .attr("y", 20)
+      .attr("value", "income") // value to grab for event listener
+      .classed("inactive", true)
+      .attr("class", "aText")
+      .text("Household Income(Median)");
 
     // Create axes labels
     chartGroup.append("text")
@@ -87,10 +158,6 @@ d3.csv("assets/data/data.csv").then(function(demoData) {
       .attr("class", "aText")
       .text("Lacks Healthcare (%)");
 
-    chartGroup.append("text")
-      .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
-      .attr("class", "aText")
-      .text("In Poverty (%)");
   }).catch(function(error) {
     console.log(error);
   });
