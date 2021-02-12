@@ -158,6 +158,64 @@ d3.csv("assets/data/data.csv").then(function(demoData, err) {
       .attr("class", "aText")
       .text("Lacks Healthcare (%)");
 
+  // x axis labels event listener
+  labelsGroup.selectAll("text")
+  .on("click", function() {
+    // get value of selection
+    var value = d3.select(this).attr("value");
+    if (value !== chosenXAxis) { // only change when we are not already there
+
+      // replaces chosenXAxis with value
+      chosenXAxis = value;
+
+      // console.log(chosenXAxis)
+
+      // functions here found above csv import
+      // updates x scale for new data
+      xLinearScale = xScale(demoData, chosenXAxis);
+
+      // updates x axis with transition
+      xAxis = renderAxes(xLinearScale, xAxis);
+
+      // updates circles with new x values
+      circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
+
+      // changes classes to change bold text
+      if (chosenXAxis === "poverty") {
+        povertyLabel
+          .classed("active", true)
+          .classed("inactive", false);
+        ageLabel
+          .classed("active", false)
+          .classed("inactive", true);
+        incomeLabel
+          .classed("active", false)
+          .classed("inactive", true);
+      }
+      else if (chosenXAxis === "age"){
+        povertyLabel
+          .classed("active", false)
+          .classed("inactive", true);
+        ageLabel
+          .classed("active", true)
+          .classed("inactive", false);
+        incomeLabel
+          .classed("active", false)
+          .classed("inactive", true);
+      }
+      else{
+        povertyLabel
+        .classed("active", false)
+        .classed("inactive", true);
+      ageLabel
+        .classed("active", false)
+        .classed("inactive", true);
+      incomeLabel
+        .classed("active", true)
+        .classed("inactive", false);
+      }
+      }
+    })
   }).catch(function(error) {
     console.log(error);
   });
