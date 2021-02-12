@@ -66,9 +66,7 @@ d3.csv("assets/data/data.csv").then(function(demoData) {
       .attr("cx", d => xLinearScale(d.poverty))
       .attr("cy", d => yLinearScale(d.healthcare))
       .attr("r", "14")
-      .attr("fill", "teal")
-      .attr("opacity", "0.8")
-      .attr("class", "dot");
+      .attr("class", "stateCircle");
     
     // Put texts along with circles inside that g group
     circlesGroup.append("text")
