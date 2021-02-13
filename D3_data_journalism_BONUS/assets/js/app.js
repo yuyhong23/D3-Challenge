@@ -117,6 +117,15 @@ function renderCircles(circlesGroup, newXScale, chosenXAxis) {
   return circlesGroup;
 }
 
+function renderCircleLabels(circleLabels, newXScale, chosenXAxis) {
+
+  circleLabels.transition()
+    .duration(1000)
+    .attr("cx", d => newXScale(d[chosenXAxis]));
+
+  return circleLabels;
+}
+
 // Import Data
 d3.csv("assets/data/data.csv").then(function(demoData, err) {
   if (err) throw err;
@@ -158,23 +167,42 @@ d3.csv("assets/data/data.csv").then(function(demoData, err) {
 
     // Create Circles and Circle Labels
     // ==============================
-    var circlesGroup = chartGroup.selectAll("g.dot")
-      .data(demoData)
-      .enter()
-      .append("g");
+    // var circlesGroup = chartGroup.selectAll("g.dot")
+    //   .data(demoData)
+    //   .enter()
+    //   .append("g");
 
-    circlesGroup.append("circle")
-      .attr("cx", d => xLinearScale(d[chosenXAxis]))
-      .attr("cy", d => yLinearScale(d.healthcare))
-      .attr("r", "14")
-      .attr("class", "stateCircle");
+    // circlesGroup.append("circle")
+    //   .attr("cx", d => xLinearScale(d[chosenXAxis]))
+    //   .attr("cy", d => yLinearScale(d.healthcare))
+    //   .attr("r", "14")
+    //   .attr("class", "dot")
+    //   .attr("class", "stateCircle");
     
-    // Put texts along with circles inside that g group
-    circlesGroup.append("text")
-      .text(d=>d.abbr)
-      .attr("x", d => xLinearScale(d[chosenXAxis]))
-      .attr("y", d => yLinearScale(d.healthcare)+6)
-      .attr("class", "stateText");
+    // // Put texts along with circles inside that g group
+    // circlesGroup.append("text")
+    //   .text(d=>d.abbr)
+    //   .attr("x", d => xLinearScale(d[chosenXAxis]))
+    //   .attr("y", d => yLinearScale(d.healthcare)+6)
+    //   .attr("class", "stateText");
+      var circlesGroup = chartGroup.selectAll("circle")
+        .data(demoData)
+        .enter()
+        .append("circle")
+        .attr("cx", d => xLinearScale(d[chosenXAxis]))
+        .attr("cy", d => yLinearScale(d.healthcare))
+        .attr("r", "14")
+        .attr("class", "stateCircle");
+
+      //  add text to Circle
+      var circleLabels = chartGroup.selectAll()
+        .data(demoData)
+        .enter()
+        .append("text")
+        .text(d => d.abbr)
+        .attr("x", d => xLinearScale(d[chosenXAxis])) 
+        .attr("y", d => yLinearScale(d.healthcare)+6) 
+        .attr("class", "stateText");
 
     // Create group for two x-axis labels
     var labelsGroup = chartGroup.append("g")
@@ -237,6 +265,9 @@ d3.csv("assets/data/data.csv").then(function(demoData, err) {
 
       // updates circles with new x values
       circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
+
+      // updates circle labels with new x values
+      circleLabels = renderCircleLabels(circleLabels, xLinearScale, chosenXAxis);
 
       // updates tooltips with new info
       circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
