@@ -121,7 +121,7 @@ function renderCircleLabels(circleLabels, newXScale, chosenXAxis) {
 
   circleLabels.transition()
     .duration(1000)
-    .attr("cx", d => newXScale(d[chosenXAxis]));
+    .attr("x", d => newXScale(d[chosenXAxis]));
 
   return circleLabels;
 }
