@@ -58,22 +58,23 @@ d3.csv("assets/data/data.csv").then(function(demoData) {
 
     // Create Circlesand Circle Labels
     // ==============================
-    var circlesGroup = chartGroup.selectAll("g.dot")
+    var circlesGroup = chartGroup.selectAll("circle")
       .data(demoData)
       .enter()
-      .append("g");
-
-    circlesGroup.append("circle")
+      .append("circle")
       .attr("cx", d => xLinearScale(d.poverty))
       .attr("cy", d => yLinearScale(d.healthcare))
       .attr("r", "14")
       .attr("class", "stateCircle");
-    
-    // Put texts along with circles inside that g group
-    circlesGroup.append("text")
-      .text(d=>d.abbr)
+
+  //  add text to Circle
+    var circleLabels = chartGroup.selectAll()
+      .data(demoData)
+      .enter()
+      .append("text")
+      .text(d => d.abbr)
       .attr("x", d => xLinearScale(d.poverty))
-      .attr("y", d => yLinearScale(d.healthcare)+6)
+      .attr("y", d => yLinearScale(d.healthcare) + 6)
       .attr("class", "stateText");
 
     // Create axes labels
